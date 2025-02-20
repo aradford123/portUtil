@@ -7,6 +7,7 @@ import json
 from  time import sleep, time, strftime, localtime
 from dnac_config import DNAC, DNAC_USER, DNAC_PASSWORD
 import sys
+from time import sleep
 logger = logging.getLogger(__name__)
 timeout = 10
 
@@ -26,8 +27,12 @@ def main(dnac):
     device_attrs_list = [ (device.id,device.managementIpAddress,device.hostname,device.snmpLocation,device.platformId) for device in device_list.response]
     # print the headers
     print('DeviceIP,Hostname,Plaform,SNMPLocation,Serial,interface,PortMode,Vlan,Description,status,AdminStatus,LastRx,LastTx')
-    for  device_attrs in device_attrs_list:
+    batchsize = 100 
+    for  index, device_attrs in enumerate(device_attrs_list,1):
         get_device_ports(dnac,*device_attrs)
+        if index % batchsize == 0:
+            print(f'Sleeping 5 seconds processed:{index}', file=sys.stderr) 
+            sleep(5)
 
     #get_device_ports(dnac,*device_device_attrs[1])
     #print (device_attrs_list)

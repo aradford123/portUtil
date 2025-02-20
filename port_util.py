@@ -18,13 +18,14 @@ def get_device_ports(dnac, deviceid,deviceip,hostname,snmp,platform):
             # skip trunks or routed ports
             if port.portMode == "Trunk" or port.portMode == "routed":
                 continue
-            print(f'{deviceip},{hostname},{platform},{snmp},{port.serialNo},{port.portName},{port.portMode},{port.vlanId},{port.description},{port.lastIncomingPacketTime},{port.lastOutgoingPacketTime}')
+            print(f'{deviceip},{hostname},{platform},{snmp},{port.serialNo},{port.portName},{port.portMode},{port.vlanId},{port.description},{port.status},{port.adminStatus},{port.lastIncomingPacketTime},{port.lastOutgoingPacketTime}')
+
 
 def main(dnac):
     device_list = dnac.devices.get_device_list(family='Switches and Hubs')
     device_attrs_list = [ (device.id,device.managementIpAddress,device.hostname,device.snmpLocation,device.platformId) for device in device_list.response]
     # print the headers
-    print('DeviceIP,Hostname,Plaform,SNMPLocation,Serial,interface,PortMode,Vlan,Description,LastRx,LastTx')
+    print('DeviceIP,Hostname,Plaform,SNMPLocation,Serial,interface,PortMode,Vlan,Description,status,AdminStatus,LastRx,LastTx')
     for  device_attrs in device_attrs_list:
         get_device_ports(dnac,*device_attrs)
 

@@ -23,15 +23,26 @@ def get_device_ports(dnac, deviceid,deviceip,hostname,snmp,platform):
 
 
 def main(dnac):
-    device_list = dnac.devices.get_device_list(family='Switches and Hubs')
-    device_attrs_list = [ (device.id,device.managementIpAddress,device.hostname,device.snmpLocation,device.platformId) for device in device_list.response]
+#    PAGE=3
+    PAGE=500
+    device_list = []
+    # need to collect all of the switches
+    for start in range (1,100+1,PAGE):
+        response = dnac.devices.get_device_list(family='Switches and Hubs',offset=start, limit=PAGE)
+        if len(response.response) == 0:
+            break
+        print(start)
+        device_list.extend(response.response)
+    total= len(device_list)
+    device_attrs_list = [ (device.id,device.managementIpAddress,device.hostname,device.snmpLocation,device.platformId) for device in device_list]
     # print the headers
     print('DeviceIP,Hostname,Plaform,SNMPLocation,Serial,interface,PortMode,Vlan,Description,status,AdminStatus,LastRx,LastTx')
     batchsize = 100 
+#    batchsize = 3 
     for  index, device_attrs in enumerate(device_attrs_list,1):
         get_device_ports(dnac,*device_attrs)
         if index % batchsize == 0:
-            print(f'Sleeping 5 seconds processed:{index}', file=sys.stderr) 
+            print(f'Sleeping 5 seconds processed:{index}/{total}', file=sys.stderr) 
             sleep(5)
 
     #get_device_ports(dnac,*device_device_attrs[1])

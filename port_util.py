@@ -33,7 +33,7 @@ def main(dnac):
         response = dnac.devices.get_device_list(family='Switches and Hubs',offset=start, limit=PAGE)
         if len(response.response) == 0:
             break
-        print(start)
+        print(start, file=sys.stderr)
         device_list.extend(response.response)
     total= len(device_list)
     device_attrs_list = [ (device.id,device.managementIpAddress,device.hostname,device.snmpLocation,device.platformId) for device in device_list]

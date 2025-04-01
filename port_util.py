@@ -7,7 +7,7 @@ import json
 from  time import sleep, time, strftime, localtime
 from dnac_config import DNAC, DNAC_USER, DNAC_PASSWORD
 import sys
-from time import sleep
+from time import sleep, time
 logger = logging.getLogger(__name__)
 timeout = 10
 
@@ -23,11 +23,13 @@ def get_device_ports(dnac, deviceid,deviceip,hostname,snmp,platform):
 
 
 def main(dnac):
-#    PAGE=3
+    #PAGE=3
     PAGE=500
     device_list = []
     # need to collect all of the switches
-    for start in range (1,100+1,PAGE):
+    # there is no way to get a count of all switches. you can only get a count of all devices.  
+    #Just break when we stop getting data
+    for start in range (1,2000+1,PAGE):
         response = dnac.devices.get_device_list(family='Switches and Hubs',offset=start, limit=PAGE)
         if len(response.response) == 0:
             break

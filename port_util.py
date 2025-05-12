@@ -11,7 +11,7 @@ from time import sleep, time
 logger = logging.getLogger(__name__)
 timeout = 10
 
-def get_device_ports(dnac, deviceid,deviceip,hostname,snmp,platform,version,dev_type,series,status):
+def get_device_ports(dnac, deviceid,deviceip,hostname,snmp,platform,version,dev_type,series,inventorystatus,reachability):
     portlist = dnac.devices.get_interface_info_by_id(deviceid)
     for port in portlist.response:
         # only get Ethernet ports
@@ -22,7 +22,7 @@ def get_device_ports(dnac, deviceid,deviceip,hostname,snmp,platform,version,dev_
             # lastInput or lastIncomingPacketTime, lastOutput or lastOutgoingPacketTime
             lastInput = port.get('lastIncomingPacketTime',port.get('lastInput'))
             lastOutput = port.get('lastOutgoingPacketTime',port.get('lastOutput'))
-            print(f'{deviceip},{hostname},{platform},{snmp},{port.serialNo},{port.portName},{port.portMode},{port.vlanId},{port.description},{port.status},{port.adminStatus},{lastInput},{lastOutput},{port.macAddress},{version},{dev_type},{series},{status}')
+            print(f'{deviceip},{hostname},{platform},{snmp},{port.serialNo},{port.portName},{port.portMode},{port.vlanId},{port.description},{port.status},{port.adminStatus},{lastInput},{lastOutput},{port.macAddress},{version},{dev_type},{series},{inventorystatus},{reachability}')
 
 
 def main(dnac):
@@ -41,9 +41,9 @@ def main(dnac):
     total= len(device_list)
     device_attrs_list = [ (device.id,device.managementIpAddress,device.hostname,
                         device.snmpLocation,device.platformId,device.softwareVersion,
-                           device.type,device.series,device.collectionStatus) for device in device_list]
+                           device.type,device.series,device.collectionStatus,device.reachabilityStatus) for device in device_list]
     # print the headers
-    print('DeviceIP,Hostname,Plaform,SNMPLocation,Serial,interface,PortMode,Vlan,Description,status,AdminStatus,LastRx,LastTx,Mac Address,Version,DeviceType,Series,Status')
+    print('DeviceIP,Hostname,Plaform,SNMPLocation,Serial,interface,PortMode,Vlan,Description,status,AdminStatus,LastRx,LastTx,Mac Address,Version,DeviceType,Series,InventoryStatus,Reachability')
     batchsize = 100 
 #    batchsize = 3 
     for  index, device_attrs in enumerate(device_attrs_list,1):

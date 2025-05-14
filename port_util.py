@@ -22,6 +22,8 @@ def get_device_ports(dnac, deviceid,deviceip,hostname,snmp,platform,version,dev_
             # lastInput or lastIncomingPacketTime, lastOutput or lastOutgoingPacketTime
             lastInput = port.get('lastIncomingPacketTime',port.get('lastInput'))
             lastOutput = port.get('lastOutgoingPacketTime',port.get('lastOutput'))
+            # replace commma in uptime
+            uptime = uptime.replace(',',';')
             print(f'{deviceip},{hostname},{platform},{snmp},{port.serialNo},{port.portName},{port.portMode},{port.vlanId},{port.description},{port.status},{port.adminStatus},{lastInput},{lastOutput},{port.macAddress},{version},{dev_type},{series},{inventorystatus},{reachability},{uptime}')
 
 

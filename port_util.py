@@ -24,7 +24,10 @@ def get_device_ports(dnac, deviceid,deviceip,hostname,snmp,platform,version,dev_
             lastOutput = port.get('lastOutgoingPacketTime',port.get('lastOutput'))
             # replace commma in uptime
             uptime = uptime.replace(',',';')
-            print(f'{deviceip},{hostname},{platform},{snmp},{port.serialNo},{port.portName},{port.portMode},{port.vlanId},{port.description},{port.status},{port.adminStatus},{lastInput},{lastOutput},{port.macAddress},{version},{dev_type},{series},{inventorystatus},{reachability},{uptime}')
+            # for stacks, replace the comma seperate list of serial and platform with ;
+            serialNo = port.serialNo.replace(',',';')
+            platform = platform.replace(',',';').replace(' ','')
+            print(f'{deviceip},{hostname},{platform},{snmp},{serialNo},{port.portName},{port.portMode},{port.vlanId},{port.description},{port.status},{port.adminStatus},{lastInput},{lastOutput},{port.macAddress},{version},{dev_type},{series},{inventorystatus},{reachability},{uptime}')
 
 
 def main(dnac):

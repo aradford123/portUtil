@@ -27,6 +27,7 @@ def get_device_ports(dnac, deviceid,deviceip,hostname,snmp,platform,version,dev_
             # for stacks, replace the comma seperate list of serial and platform with ;
             serialNo = port.serialNo.replace(',',';')
             platform = platform.replace(',',';').replace(' ','')
+            snmp = snmp.replace(',',';')
             print(f'{deviceip},{hostname},{platform},{snmp},{serialNo},{port.portName},{port.portMode},{port.vlanId},{port.description},{port.status},{port.adminStatus},{lastInput},{lastOutput},{port.macAddress},{version},{dev_type},{series},{inventorystatus},{reachability},{uptime}')
 
 

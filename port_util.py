@@ -43,7 +43,7 @@ def main(dnac):
         response = dnac.devices.get_device_list(family='Switches and Hubs',offset=start, limit=PAGE)
         if len(response.response) == 0:
             break
-        print(start, file=sys.stderr)
+        logger.debug(start)
         device_list.extend(response.response)
     total= len(device_list)
     device_attrs_list = [ (device.id,device.managementIpAddress,device.hostname,
@@ -53,11 +53,12 @@ def main(dnac):
     # print the headers
     print('DeviceIP,Hostname,Plaform,SNMPLocation,Serial,interface,PortMode,Vlan,Description,status,AdminStatus,LastRx,LastTx,Mac Address,Version,DeviceType,Series,InventoryStatus,Reachability,Uptime')
     batchsize = 100 
-#    batchsize = 3 
+    #batchsize = 3 
     for  index, device_attrs in enumerate(device_attrs_list,1):
         get_device_ports(dnac,*device_attrs)
         if index % batchsize == 0:
-            print(f'Sleeping 5 seconds processed:{index}/{total}', file=sys.stderr) 
+            #$print(f'Sleeping 5 seconds processed:{index}/{total}', file=sys.stderr) 
+            logger.debug(f'Sleeping 5 seconds processed:{index}/{total}') 
             sleep(5)
 
     #get_device_ports(dnac,*device_device_attrs[1])
